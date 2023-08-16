@@ -1,0 +1,90 @@
+# Board of Game
+board = [[' ', ' ', ' '],
+         [' ', ' ', ' '],
+         [' ', ' ', ' ']]
+
+# Set win
+win = 0
+# lst for checking pos already in list or not
+lst_check = []
+# turn x and y
+turn = 0
+
+# Define check win function
+def checkwin():
+    # Check rows, columns, and diagonals for a win
+    for i in range(3):
+        if board[i][0] == board[i][1] == board[i][2] and board[i][0] != ' ':
+            return 1
+        if board[0][i] == board[1][i] == board[2][i] and board[0][i] != ' ':
+            return 1
+    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != ' ':
+        return 1
+    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != ' ':
+        return 1
+    
+    # Check for a draw
+    if len(lst_check) == 9:
+        return 2
+    return 0
+
+st = ''
+
+# Start Game
+while True:
+    win = checkwin()
+    if win == 1:
+        print(st)
+        if turn == 0: 
+            print('Player one (X) WON')
+        else:
+            print('Player two (O) WON')
+        break
+    elif win == 2:
+        print(st)
+        print('------------ Draw ------------')
+        break
+    
+    # Display whose turn it is
+    if turn == 0:
+        player = 'Player one (X)'
+    else:
+        player = 'Player two (O)'
+    
+    print(f"It is {player}'s turn")
+    
+    while True:
+        # Get and validate user input
+        pos = input('Enter the position you want (row column): ').strip().split()
+        if len(pos) != 2:
+            print('Wrong input format. Please enter row and column.')
+            continue
+        
+        try:
+            pos = [int(pos[0]), int(pos[1])]
+        except ValueError:
+            print('Invalid input. Please enter numbers for row and column.')
+            continue
+        
+        if pos[0] not in range(3) or pos[1] not in range(3):
+            print('Invalid position. Please enter valid row (0-2) and column (0-2).')
+            continue
+        
+        if board[pos[0]][pos[1]] != ' ':
+            print('This position is already taken. Choose another position.')
+            continue
+        
+        # Valid input, break the loop
+        break
+    
+    # Update the board
+    board[pos[0]][pos[1]] = 'X' if turn == 0 else 'O'
+    lst_check.append(pos)
+    turn = 1 - turn  # Toggle the turn
+    
+    # Display the updated board
+    st = '--------\n'
+    for row in board:
+        st += '|'.join(row) + '\n'
+    st += '--------\n'
+    print(st)
